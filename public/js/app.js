@@ -9,14 +9,32 @@ weekday[6] = "Saturday";
 
 
 function getLocation() {
+	console.log(navigator.geolocation);
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(showPosition);
+		navigator.geolocation.getCurrentPosition(showPosition,function (params) {
+			console.log("Geolocation not allowed by the user");
+			let position = {
+				coords: {
+					latitude: 28.6139,
+					longitude: 77.2090
+				}
+			}
+			showPosition(position)
+		});
 	} else {
 		console.log("Geolocation is not supported by this browser.");
+		let position ={
+			coords:{
+				latitude: 28.644800,
+				longitude: 77.216721
+			}
+		}
+		showPosition(position)
 	}
 }
 
 function showPosition(position) {
+	console.log(position);
 	fetch('/getweather', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -27,6 +45,7 @@ function showPosition(position) {
 	}).then(response=>{
 		return response.json()
 	}).then(data=>{
+		console.log(data);
 		setWeather(data);
 	});
 }
